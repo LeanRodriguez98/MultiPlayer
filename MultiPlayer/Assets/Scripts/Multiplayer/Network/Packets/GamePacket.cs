@@ -74,6 +74,43 @@ public class RotationPacket : GamePacket<Quaternion>
     }
 }
 
+public class PlayerUIPacket : GamePacket</*UI_Canvas.PlayerUIData*/string>
+{
+    public PlayerUIPacket() : base(global::PacketType.User)
+    {
+        userPacketType = (ushort)UserPacketType.PlayerUI;
+    }
+
+    public override void OnSerialize(Stream stream)
+    {
+        BinaryWriter binaryWriter = new BinaryWriter(stream);
+        //string buffer = payload.playerHealt.text + '?' + payload.bulletSpeed.text + '?' + payload.cannonAngle.text;
+        binaryWriter.Write(payload);
+        //語
+    }
+
+    public override void OnDeserialize(Stream stream)
+    {
+        BinaryReader binaryReader = new BinaryReader(stream);
+        payload = binaryReader.ReadString();
+
+        /*string buffer = binaryReader.ReadString();
+        string[] texts = buffer.Split(new char[] { '?' });
+        payload.
+            playerHealt.
+            text 
+            = new string(texts[0].ToCharArray());
+        payload.
+            bulletSpeed.
+            text 
+            = new string(texts[1].ToCharArray());
+        payload.
+            bulletSpeed.
+            text 
+            = new string(texts[2].ToCharArray());*/
+    }
+}
+
 public class IntPacket : GamePacket<int>
 {
     public IntPacket() : base(global::PacketType.User) { 

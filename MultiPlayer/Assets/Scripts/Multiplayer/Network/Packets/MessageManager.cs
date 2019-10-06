@@ -12,7 +12,6 @@ public class MessageManager : Singleton<MessageManager>
         MessagePacket packet = new MessagePacket();
 
         packet.payload = message;
-        UnityEngine.Debug.Log(message + "   --> " + objectId);
         PacketManager.Instance.SendPacket(packet, objectId);
     }
 
@@ -39,6 +38,15 @@ public class MessageManager : Singleton<MessageManager>
         IntPacket packet = new IntPacket();
 
         packet.payload = number;
+
+        PacketManager.Instance.SendPacket(packet, objectId);
+    }
+
+    public void SendPlayerUI(/*UI_Canvas.PlayerUIData*/string playerUIData, uint objectId)
+    {
+        PlayerUIPacket packet = new PlayerUIPacket();
+
+        packet.payload = playerUIData;
 
         PacketManager.Instance.SendPacket(packet, objectId);
     }

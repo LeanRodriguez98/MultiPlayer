@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Canvas : MonoBehaviour {
-
+public class UI_Canvas : MBSingleton<UI_Canvas>
+{
     [System.Serializable]
     public struct PlayerUIData
     {
@@ -13,23 +13,34 @@ public class UI_Canvas : MonoBehaviour {
         public Text cannonAngle;
     }
 
-
-    public static UI_Canvas instance;
     public Text timeText;
     public Text playerTurnText;
 
-    public PlayerUIData[] playersUIData;
+    public PlayerUIData playerUIServerData;
+    public PlayerUIData playerUIClientData;
+    private PlayerUIData playerUIData;
+
     public GameObject gameOverScreen;
     private int currentPlayerTurn = 0;
-    private void Awake()
-    {
-        instance = this;
-    }
+    private ClientPlayerUIData clientPlayerUIData;
 
-    void Start ()
+    void Start()
     {
+        ClientPlayerUIData clientUIData;
         UpdateCurrentPlayerTurn();
-
+        if (NetworkManager.Instance.isServer)
+        {
+            playerUIData = playerUIServerData;
+            clientUIData = gameObject.AddComponent<ClientPlayerUIData>();
+            clientUIData.uiToUpdate = playerUIClientData;
+        }
+        else
+        {
+            playerUIData = playerUIClientData;
+            clientUIData = gameObject.AddComponent<ClientPlayerUIData>();
+            clientUIData.uiToUpdate = playerUIServerData;
+        }
+        clientUIData.Init();
     }
 
     public void SetTimeText(string _timeText)
@@ -37,30 +48,30 @@ public class UI_Canvas : MonoBehaviour {
         timeText.text = _timeText;
     }
 
-    public void SetPlayerUIData(Tank[] tanks)
+    public void SetPlayerUIData(Tank tank)
     {
-        for (int i = 0; i < playersUIData.Length; i++)
-        {
-            playersUIData[i].playerHealt.text = "Lifes " + tanks[i].lifes.ToString();
-            playersUIData[i].bulletSpeed.text = "Bullet Speed " + tanks[i].bulletVelocity.ToString("00.00");
-            playersUIData[i].cannonAngle.text = "Cannon Angle " + Mathf.Abs(tanks[i].AuxAngle).ToString("00.00");
-        }
+        playerUIData.playerHealt.text = "Lifes " + tank.lifes.ToString();
+        playerUIData.bulletSpeed.text = "Bullet Speed " + tank.bulletVelocity.ToString("00.00");
+        playerUIData.cannonAngle.text = "Cannon Angle " + Mathf.Abs(tank.AuxAngle).ToString("00.00");
+        string dataBuffer = playerUIData.playerHealt.text + '?' + playerUIData.bulletSpeed.text + '?' + playerUIData.cannonAngle.text;
+        MessageManager.Instance.SendPlayerUI(dataBuffer, ObjectsID.playerUIObjectID);
     }
 
     public void UpdateCurrentPlayerTurn()
     {
-        currentPlayerTurn++;
+        /*currentPlayerTurn++;
         if (currentPlayerTurn > GameManager.instance.players.Length)
         {
             currentPlayerTurn = 1;
-        }
+        }*/
         playerTurnText.text = "Player's " + currentPlayerTurn.ToString() + " turn";
     }
 
     public void OnGameOver()
     {
         gameOverScreen.gameObject.SetActive(true);
-        
     }
+
+
 }
 

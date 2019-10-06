@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MBSingleton<GameManager> {
 
     [System.Serializable]
     public struct Timer
@@ -12,37 +12,34 @@ public class GameManager : MonoBehaviour {
         public float miliseconds;
     }
 
-    public static GameManager instance;
     public Timer turnTime;
-    public Tank[] players;
+    private Tank player;
 
     [HideInInspector] public bool gameOver = false;
 
     private Timer auxTimer;
-    private UI_Canvas canvasInstance;
-    private void Awake()
+
+    public void SetLocalPlayer(Tank _player)
     {
-        instance = this;
+        player = _player;
     }
 
     // Use this for initialization
     void Start () {
         auxTimer = turnTime;
-       // players[0].SetTurn();
-        canvasInstance = UI_Canvas.instance;
+        if (NetworkManager.Instance.isServer)
+        {
+            player.SetTurn();
+        }
+        player.SetTurn();
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (!gameOver)
         {
-            canvasInstance.SetTimeText(UpdateTime());
-            //canvasInstance.SetPlayerUIData(players);
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Utilities.ReloadScene();
+            UI_Canvas.Instance.SetTimeText(UpdateTime());
+            UI_Canvas.Instance.SetPlayerUIData(player);
         }
     }
 
@@ -50,7 +47,7 @@ public class GameManager : MonoBehaviour {
     {
         if (turnTime.minutes < 0)
         {
-            //OnEndTurn();
+            OnEndTurn();
             return "0:00:00";
         }
         if (turnTime.miliseconds <= 0)
@@ -76,31 +73,15 @@ public class GameManager : MonoBehaviour {
 
     public void OnEndTurn()
     {
-        /*for (int i = 0; i < players.Length; i++)
-        {
-            players[i].SetTurn();
-        }
+        player.SetTurn();
         turnTime = auxTimer;
-        canvasInstance.UpdateCurrentPlayerTurn();*/
+        UI_Canvas.Instance.UpdateCurrentPlayerTurn();
     }
-
 
     public void OnGameOver()
     {
-        UI_Canvas.instance.OnGameOver();
+        UI_Canvas.Instance.OnGameOver();
         gameOver = true;
-    }
-
-    public Tank GetEnemyTank()
-    {
-        foreach (Tank tank in players)
-        {
-            if (!tank.isYourTurn)
-            {
-                return tank;
-            }
-        }
-        return null;
     }
 
 }

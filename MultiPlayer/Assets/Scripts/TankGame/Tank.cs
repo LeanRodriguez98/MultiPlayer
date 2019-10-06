@@ -37,10 +37,6 @@ public class Tank : MonoBehaviour {
     [HideInInspector] public bool isYourTurn = false;
     private bool usedShoot = false;
     private Rigidbody2D rb;
-    private void Awake()
-    {
-   
-    }
 
 	void Start ()
     {
@@ -78,7 +74,7 @@ public class Tank : MonoBehaviour {
         {
             if (!usedShoot)
             {
-                if (!GameManager.instance.gameOver)
+                if (!GameManager.Instance.gameOver)
                 {
                     Movement();
                     RotateTorret();
@@ -161,7 +157,7 @@ public class Tank : MonoBehaviour {
         lifes -= damage;
         if (lifes <= 0)
         {
-            GameManager.instance.OnGameOver();
+            GameManager.Instance.OnGameOver();
         }
     }
 

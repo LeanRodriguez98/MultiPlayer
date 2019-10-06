@@ -9,6 +9,7 @@ public enum UserPacketType
     Position,
     Rotation,
     Int,
+    PlayerUI,
     Count
 }
 

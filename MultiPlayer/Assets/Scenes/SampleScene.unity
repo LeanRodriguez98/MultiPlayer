@@ -500,18 +500,19 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 300904855}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe2ccd6c3e551a04ea03593c665a42ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 819386682}
   playerTurnText: {fileID: 1678303108}
-  playersUIData:
-  - playerHealt: {fileID: 1165688697}
+  playerUIServerData:
+    playerHealt: {fileID: 1165688697}
     bulletSpeed: {fileID: 624794188}
     cannonAngle: {fileID: 2095343260}
-  - playerHealt: {fileID: 163054720}
+  playerUIClientData:
+    playerHealt: {fileID: 163054720}
     bulletSpeed: {fileID: 1595104345}
     cannonAngle: {fileID: 1473885348}
   gameOverScreen: {fileID: 1395809982}
@@ -2221,6 +2222,8 @@ MonoBehaviour:
   blueBullet: {fileID: 1581361965}
   networkMenu: {fileID: 1976602687}
   game: {fileID: 2066661491}
+  gameManager: {fileID: 1773509404}
+  canvas: {fileID: 300904856}
 --- !u!1 &1395809982
 GameObject:
   m_ObjectHideFlags: 0
@@ -3164,7 +3167,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1773509403}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 183fb923c0b44eb4b8824fc46da3ce29, type: 3}
   m_Name: 
@@ -3173,7 +3176,6 @@ MonoBehaviour:
     minutes: 1
     seconds: 0
     miliseconds: 0
-  players: []
   gameOver: 0
 --- !u!4 &1773509405
 Transform:

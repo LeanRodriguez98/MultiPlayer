@@ -9,8 +9,6 @@ public class TanksManagers : MBSingleton<TanksManagers> {
     public ClientText playerPointsText;
     public ClientText playerUDPPointsText;
 
-
-
     public bool isServer = true;
     public GameObject redTank;
     public GameObject blueTank;
@@ -20,7 +18,8 @@ public class TanksManagers : MBSingleton<TanksManagers> {
     public GameObject networkMenu;
     public GameObject game;
 
-
+    public GameManager gameManager;
+    public UI_Canvas canvas;
     public void InitGame()
     {
         isServer = NetworkManager.Instance.isServer;
@@ -28,6 +27,8 @@ public class TanksManagers : MBSingleton<TanksManagers> {
         game.SetActive(true);
         redTank.SetActive(true);
         blueTank.SetActive(true);
+        gameManager.enabled = true;
+        canvas.enabled = true;
         SetPlayers();
         AddListener();
     }
@@ -48,6 +49,7 @@ public class TanksManagers : MBSingleton<TanksManagers> {
             blueBullet.AddComponent<ClientBullet>();
             Destroy(blueTank.GetComponent<Tank>());
             blueTank.AddComponent<ClientTank>();
+            GameManager.Instance.SetLocalPlayer(redTank.GetComponent<Tank>());
         }
         else
         {
@@ -55,6 +57,7 @@ public class TanksManagers : MBSingleton<TanksManagers> {
             redBullet.AddComponent<ClientBullet>();
             Destroy(redTank.GetComponent<Tank>());
             redTank.AddComponent<ClientTank>();
+            GameManager.Instance.SetLocalPlayer(blueTank.GetComponent<Tank>());
         }
     }
 
