@@ -50,4 +50,18 @@ public class MessageManager : Singleton<MessageManager>
 
         PacketManager.Instance.SendPacket(packet, objectId);
     }
+
+    public void SendTurnSing(string singContent, uint objectId)
+    {
+        TurnSignPacket packet = new TurnSignPacket();
+        packet.payload = singContent;
+        PacketManager.Instance.SendPacket(packet, objectId);
+    }
+
+    public void SendClockSing(string clockContent, uint objectId)
+    {
+        ClockSignPacket packet = new ClockSignPacket();
+        packet.payload = clockContent;
+        PacketManager.Instance.SendPacket(packet, objectId);
+    }
 }

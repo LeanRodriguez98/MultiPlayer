@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class ClientPlayerUIData : MonoBehaviour
 {
+    private UI_Canvas.PlayerUIData uiToUpdate;
 
-    public UI_Canvas.PlayerUIData uiToUpdate;
-
-    
+    public void SetUIToUpdate(UI_Canvas.PlayerUIData _uiToUpdate)
+    {
+        uiToUpdate = _uiToUpdate;
+    }
     public void Init()
     {
         PacketManager.Instance.Awake();
@@ -25,7 +27,7 @@ public class ClientPlayerUIData : MonoBehaviour
                 PlayerUIPacket playerUIPacket = new PlayerUIPacket();
                 playerUIPacket.Deserialize(stream);
 
-                string[] texts = playerUIPacket.payload.Split(new char[] { '?' });
+                string[] texts = playerUIPacket.payload.Split(new char[] { '語' });
 
                 uiToUpdate.playerHealt.text = texts[0];// playerUIPacket.payload.playerHealt.text;
                 uiToUpdate.bulletSpeed.text = texts[1];// playerUIPacket.payload.bulletSpeed.text;

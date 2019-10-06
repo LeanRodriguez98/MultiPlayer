@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 26258984}
   - component: {fileID: 26258983}
   m_Layer: 5
-  m_Name: PlayerInfoPanel (1)
+  m_Name: BlueTankInfoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -507,11 +507,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeText: {fileID: 819386682}
   playerTurnText: {fileID: 1678303108}
-  playerUIServerData:
+  redTankUI:
     playerHealt: {fileID: 1165688697}
     bulletSpeed: {fileID: 624794188}
     cannonAngle: {fileID: 2095343260}
-  playerUIClientData:
+  blueTankUI:
     playerHealt: {fileID: 163054720}
     bulletSpeed: {fileID: 1595104345}
     cannonAngle: {fileID: 1473885348}
@@ -889,7 +889,7 @@ GameObject:
   - component: {fileID: 624794189}
   - component: {fileID: 624794188}
   m_Layer: 5
-  m_Name: bulletForceText
+  m_Name: BulletForceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1104,7 +1104,7 @@ GameObject:
   - component: {fileID: 735367152}
   - component: {fileID: 735367151}
   m_Layer: 5
-  m_Name: PlayerInfoPanel
+  m_Name: RedTankInfoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2502,7 +2502,7 @@ GameObject:
   - component: {fileID: 1595104344}
   - component: {fileID: 1595104345}
   m_Layer: 5
-  m_Name: bulletForceText
+  m_Name: BulletForceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

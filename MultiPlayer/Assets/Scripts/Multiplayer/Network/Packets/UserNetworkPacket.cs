@@ -10,6 +10,8 @@ public enum UserPacketType
     Rotation,
     Int,
     PlayerUI,
+    TurnSign,
+    Clock,
     Count
 }
 

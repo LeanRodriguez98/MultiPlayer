@@ -5,12 +5,13 @@ public abstract class GamePacket<P> : NetworkPacket<P>
 {
     public GamePacket(PacketType packetType) : base(packetType) { }
 }
- 
+
 public class MessagePacket : GamePacket<string>
 {
-    public MessagePacket() : base(global::PacketType.User) { 
+    public MessagePacket() : base(global::PacketType.User)
+    {
         userPacketType = (ushort)UserPacketType.Message;
-        }
+    }
 
     public override void OnSerialize(Stream stream)
     {
@@ -27,9 +28,10 @@ public class MessagePacket : GamePacket<string>
 
 public class PositionPacket : GamePacket<Vector3>
 {
-    public PositionPacket() : base(global::PacketType.User) { 
+    public PositionPacket() : base(global::PacketType.User)
+    {
         userPacketType = (ushort)UserPacketType.Position;
-        }
+    }
 
     public override void OnSerialize(Stream stream)
     {
@@ -111,10 +113,51 @@ public class PlayerUIPacket : GamePacket</*UI_Canvas.PlayerUIData*/string>
     }
 }
 
+public class TurnSignPacket : GamePacket<string>
+{
+    public TurnSignPacket() : base(global::PacketType.User)
+    {
+        userPacketType = (ushort)UserPacketType.TurnSign;
+    }
+
+    public override void OnSerialize(Stream stream)
+    {
+        BinaryWriter binaryWriter = new BinaryWriter(stream);
+        binaryWriter.Write(payload);
+    }
+
+    public override void OnDeserialize(Stream stream)
+    {
+        BinaryReader binaryReader = new BinaryReader(stream);
+        payload = binaryReader.ReadString();
+    }
+}
+
+public class ClockSignPacket : GamePacket<string>
+{
+    public ClockSignPacket() : base(global::PacketType.User)
+    {
+        userPacketType = (ushort)UserPacketType.Clock;
+    }
+
+    public override void OnSerialize(Stream stream)
+    {
+        BinaryWriter binaryWriter = new BinaryWriter(stream);
+        binaryWriter.Write(payload);
+    }
+
+    public override void OnDeserialize(Stream stream)
+    {
+        BinaryReader binaryReader = new BinaryReader(stream);
+        payload = binaryReader.ReadString();
+    }
+}
+
 public class IntPacket : GamePacket<int>
 {
-    public IntPacket() : base(global::PacketType.User) { 
-        userPacketType = (ushort)UserPacketType.Int; 
+    public IntPacket() : base(global::PacketType.User)
+    {
+        userPacketType = (ushort)UserPacketType.Int;
     }
 
     public override void OnSerialize(Stream stream)

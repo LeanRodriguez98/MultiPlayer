@@ -12,33 +12,37 @@ public class UI_Canvas : MBSingleton<UI_Canvas>
         public Text bulletSpeed;
         public Text cannonAngle;
     }
-
     public Text timeText;
     public Text playerTurnText;
-
-    public PlayerUIData playerUIServerData;
-    public PlayerUIData playerUIClientData;
+    public PlayerUIData redTankUI;
+    public PlayerUIData blueTankUI;
     private PlayerUIData playerUIData;
-
     public GameObject gameOverScreen;
-    private int currentPlayerTurn = 0;
-    private ClientPlayerUIData clientPlayerUIData;
+    private bool serverPlayerTurn = true;
 
+    public string yourTurnText = "Your Turn";
+    public string oponentTurnText = "Oponent Turn";
     void Start()
     {
         ClientPlayerUIData clientUIData;
-        UpdateCurrentPlayerTurn();
         if (NetworkManager.Instance.isServer)
         {
-            playerUIData = playerUIServerData;
+            playerUIData = redTankUI;
             clientUIData = gameObject.AddComponent<ClientPlayerUIData>();
-            clientUIData.uiToUpdate = playerUIClientData;
+            clientUIData.SetUIToUpdate(blueTankUI);
+            UpdatePlayerTurn();
         }
         else
         {
-            playerUIData = playerUIClientData;
+            playerUIData = blueTankUI;
             clientUIData = gameObject.AddComponent<ClientPlayerUIData>();
-            clientUIData.uiToUpdate = playerUIServerData;
+            clientUIData.SetUIToUpdate(redTankUI);
+            ClientTurnSign clientTurnSign;
+            clientTurnSign = gameObject.AddComponent<ClientTurnSign>();
+            clientTurnSign.SetTurnSign(playerTurnText);
+            clientTurnSign.SetClockSign(timeText);
+            clientTurnSign.Init();
+            playerTurnText.text = oponentTurnText;
         }
         clientUIData.Init();
     }
@@ -46,6 +50,7 @@ public class UI_Canvas : MBSingleton<UI_Canvas>
     public void SetTimeText(string _timeText)
     {
         timeText.text = _timeText;
+        MessageManager.Instance.SendClockSing(_timeText, ObjectsID.clockSignObjectID);
     }
 
     public void SetPlayerUIData(Tank tank)
@@ -53,25 +58,28 @@ public class UI_Canvas : MBSingleton<UI_Canvas>
         playerUIData.playerHealt.text = "Lifes " + tank.lifes.ToString();
         playerUIData.bulletSpeed.text = "Bullet Speed " + tank.bulletVelocity.ToString("00.00");
         playerUIData.cannonAngle.text = "Cannon Angle " + Mathf.Abs(tank.AuxAngle).ToString("00.00");
-        string dataBuffer = playerUIData.playerHealt.text + '?' + playerUIData.bulletSpeed.text + '?' + playerUIData.cannonAngle.text;
+        string dataBuffer = playerUIData.playerHealt.text + '語' + playerUIData.bulletSpeed.text + '語' + playerUIData.cannonAngle.text;
         MessageManager.Instance.SendPlayerUI(dataBuffer, ObjectsID.playerUIObjectID);
     }
 
-    public void UpdateCurrentPlayerTurn()
+    public void UpdatePlayerTurn()
     {
-        /*currentPlayerTurn++;
-        if (currentPlayerTurn > GameManager.instance.players.Length)
+        
+        if (serverPlayerTurn)
         {
-            currentPlayerTurn = 1;
-        }*/
-        playerTurnText.text = "Player's " + currentPlayerTurn.ToString() + " turn";
+            playerTurnText.text = yourTurnText;
+            MessageManager.Instance.SendTurnSing(oponentTurnText, ObjectsID.turnSignObjectID);
+        }
+        else
+        {
+            playerTurnText.text = oponentTurnText;
+            MessageManager.Instance.SendTurnSing(yourTurnText, ObjectsID.turnSignObjectID);
+        } 
+        serverPlayerTurn = !serverPlayerTurn;
     }
 
     public void OnGameOver()
     {
         gameOverScreen.gameObject.SetActive(true);
     }
-
-
 }
-
