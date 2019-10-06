@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MBSingleton<GameManager> {
+public class GameManager : MBSingleton<GameManager>
+{
 
     [System.Serializable]
     public struct Timer
@@ -13,41 +14,46 @@ public class GameManager : MBSingleton<GameManager> {
     }
 
     public Timer turnTime;
-    private Tank player;
+    [HideInInspector] public Tank player;
 
     [HideInInspector] public bool gameOver = false;
 
     private Timer auxTimer;
-
+    private string clockValue;
     public void SetLocalPlayer(Tank _player)
     {
         player = _player;
     }
 
     // Use this for initialization
-    void Start () {
-        auxTimer = turnTime;
-        {
-            player.SetTurn();
-        }
+    void Start()
+    {
+        //auxTimer = turnTime;
+       // if (NetworkManager.Instance.isServer)
+           // player.SetTurn();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         if (!gameOver)
         {
+
+           /* UpdateTime();
             if (NetworkManager.Instance.isServer)
-                UI_Canvas.Instance.SetTimeText(UpdateTime());
+                UI_Canvas.Instance.SetTimeText(clockValue);*/
+
             UI_Canvas.Instance.SetPlayerUIData(player);
         }
     }
 
-    private string UpdateTime()
+    private void UpdateTime()
     {
         if (turnTime.minutes < 0)
         {
             OnEndTurn();
-            return "0:00:00";
+            clockValue = "0:00:00";
+            return;
         }
         if (turnTime.miliseconds <= 0)
         {
@@ -67,16 +73,15 @@ public class GameManager : MBSingleton<GameManager> {
         turnTime.miliseconds -= Time.deltaTime * 100;
         if (turnTime.miliseconds < 0)
             turnTime.miliseconds = 0;
-        return string.Format("{0}:{1}:{2}", turnTime.minutes.ToString("0"), turnTime.seconds.ToString("00"), ((int)(turnTime.miliseconds)).ToString("00"));
+        clockValue = string.Format("{0}:{1}:{2}", turnTime.minutes.ToString("0"), turnTime.seconds.ToString("00"), ((int)(turnTime.miliseconds)).ToString("00"));
     }
 
     public void OnEndTurn()
     {
-        player.SetTurn();
         turnTime = auxTimer;
-
         if (NetworkManager.Instance.isServer)
             UI_Canvas.Instance.UpdatePlayerTurn();
+        player.SetTurn();
     }
 
     public void OnGameOver()
@@ -84,5 +89,4 @@ public class GameManager : MBSingleton<GameManager> {
         UI_Canvas.Instance.OnGameOver();
         gameOver = true;
     }
-
 }

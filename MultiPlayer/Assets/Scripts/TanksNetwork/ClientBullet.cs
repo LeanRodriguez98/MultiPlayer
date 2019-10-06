@@ -24,4 +24,12 @@ public class ClientBullet : MonoBehaviour
                 break;
         }
     }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject == GameManager.Instance.player.gameObject)
+        {
+            GameManager.Instance.player.LoseOneLife();
+        }
+    }
 }

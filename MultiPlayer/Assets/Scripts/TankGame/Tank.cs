@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class Tank : MonoBehaviour {
+public class Tank : MonoBehaviour
+{
 
     [System.Serializable]
     public struct Controls
@@ -34,56 +35,26 @@ public class Tank : MonoBehaviour {
     public float bulletVelocity = 0.0f;
     public float bulletVelocityMultiplyer;
     public int lifes;
-    [HideInInspector] public bool isYourTurn = false;
+    [HideInInspector] public bool isYourTurn = true;
     private bool usedShoot = false;
     private Rigidbody2D rb;
 
-	void Start ()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         torretPivot.gameObject.transform.rotation = Quaternion.Euler(Vector3.zero);
     }
 
 
-    public void SetData(Tank t, bool isClient)
+    void Update()
     {
-        controls.addAngleKey = t.controls.addAngleKey;
-        controls.removeAngleKey = t.controls.removeAngleKey;
-        controls.addBulletVelocity = t.controls.addBulletVelocity;
-        controls.removeBulletVelocity = t.controls.removeBulletVelocity;
-        controls.rightMovement = t.controls.rightMovement;
-        controls.leftMovement = t.controls.leftMovement;
-        controls.shoot = t.controls.shoot;
-        
-        movementSpeed = t.movementSpeed;
-        rotationSpeed = t.rotationSpeed;
-        maxBulletVelocity = t.maxBulletVelocity;
-        bulletVelocityMultiplyer = t.bulletVelocityMultiplyer;
-        lifes = t.lifes;
-        torretPivot = transform.Find("TorretPivot").gameObject;
-        torretPivot.gameObject.transform.rotation = Quaternion.Euler(Vector3.zero);
-        rb = GetComponent<Rigidbody2D>();
-        bulletToShoot.bulletRb = bulletToShoot.bullet.GetComponent<Rigidbody2D>();
-        bulletToShoot.spriteRenderer = bulletToShoot.bullet.GetComponent<SpriteRenderer>();
-        bulletToShoot.bulletColor = GetComponent<SpriteRenderer>().color;
-        isYourTurn = isClient;
-    }
-    void Update ()
-    {
-        if (true /*isYourTurn*/)
-        {
-            if (!usedShoot)
+            if (!GameManager.Instance.gameOver)
             {
-                if (!GameManager.Instance.gameOver)
-                {
-                    Movement();
-                    RotateTorret();
-                    ModifyBulletVelocity();
-                    Shoot();
-                    
-                }
+                Movement();
+                RotateTorret();
+                ModifyBulletVelocity();
+                Shoot();
             }
-        }
 
         MessageManager.Instance.SendPosition(transform.position, ObjectsID.tankObjectID);
         MessageManager.Instance.SendRotation(torretPivot.transform.rotation, ObjectsID.tankObjectID);
@@ -100,15 +71,15 @@ public class Tank : MonoBehaviour {
             rb.AddForce((-transform.right * movementSpeed * Time.deltaTime));
         }
     }
-    
+
     public void RotateTorret()
     {
-        if (Input.GetKey(controls.addAngleKey) && AuxAngle < 90)
+        if (Input.GetKey(controls.addAngleKey) && AuxAngle < 45)
         {
             torretPivot.transform.eulerAngles += new Vector3(0, 0, rotationSpeed) * Time.deltaTime;
             AuxAngle += rotationSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(controls.removeAngleKey) && AuxAngle > -90)
+        if (Input.GetKey(controls.removeAngleKey) && AuxAngle > -45)
         {
             torretPivot.transform.eulerAngles += new Vector3(0, 0, -rotationSpeed) * Time.deltaTime;
             AuxAngle -= rotationSpeed * Time.deltaTime;
@@ -137,24 +108,32 @@ public class Tank : MonoBehaviour {
         }
 
     }
-    
+
     public void Shoot()
     {
-        if (Input.GetKeyDown(controls.shoot))
+        if (!usedShoot)
         {
-            bulletToShoot.bullet.SetActive(true);
-            bulletToShoot.bulletRb.velocity = Vector2.zero;
-            bulletToShoot.bulletRb.angularVelocity = 0.0f;
-            bulletToShoot.bullet.transform.position = transform.position;
-            bulletToShoot.spriteRenderer.color = bulletToShoot.bulletColor;
-            bulletToShoot.bulletRb.AddForce(torretPivot.transform.up * bulletVelocity * 100);
-            usedShoot = true;
+
+            if (Input.GetKeyDown(controls.shoot))
+            {
+                bulletToShoot.bullet.SetActive(true);
+                bulletToShoot.bulletRb.velocity = Vector2.zero;
+                bulletToShoot.bulletRb.angularVelocity = 0.0f;
+                bulletToShoot.bullet.transform.position = transform.position;
+                bulletToShoot.spriteRenderer.color = bulletToShoot.bulletColor;
+                bulletToShoot.bulletRb.AddForce(torretPivot.transform.up * bulletVelocity * 100);
+                usedShoot = true;
+                Invoke("ResetShoot", 5.0f);
+            }
         }
     }
-
-    public void SetDamage(int damage)
+    public void ResetShoot()
     {
-        lifes -= damage;
+        usedShoot = false;
+    }
+    public void LoseOneLife()
+    {
+        lifes--;
         if (lifes <= 0)
         {
             GameManager.Instance.OnGameOver();

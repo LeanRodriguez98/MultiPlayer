@@ -30,19 +30,19 @@ public class UI_Canvas : MBSingleton<UI_Canvas>
             playerUIData = redTankUI;
             clientUIData = gameObject.AddComponent<ClientPlayerUIData>();
             clientUIData.SetUIToUpdate(blueTankUI);
-            UpdatePlayerTurn();
+            //UpdatePlayerTurn();
         }
         else
         {
             playerUIData = blueTankUI;
             clientUIData = gameObject.AddComponent<ClientPlayerUIData>();
             clientUIData.SetUIToUpdate(redTankUI);
-            ClientTurnSign clientTurnSign;
-            clientTurnSign = gameObject.AddComponent<ClientTurnSign>();
-            clientTurnSign.SetTurnSign(playerTurnText);
-            clientTurnSign.SetClockSign(timeText);
-            clientTurnSign.Init();
-            playerTurnText.text = oponentTurnText;
+           // ClientTurnSign clientTurnSign;
+           // clientTurnSign = gameObject.AddComponent<ClientTurnSign>();
+           // clientTurnSign.SetTurnSign(playerTurnText);
+           // clientTurnSign.SetClockSign(timeText);
+           // clientTurnSign.Init();
+           // playerTurnText.text = oponentTurnText;
         }
         clientUIData.Init();
     }

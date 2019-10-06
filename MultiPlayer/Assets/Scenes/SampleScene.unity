@@ -516,6 +516,8 @@ MonoBehaviour:
     bulletSpeed: {fileID: 1595104345}
     cannonAngle: {fileID: 1473885348}
   gameOverScreen: {fileID: 1395809982}
+  yourTurnText: Your Turn
+  oponentTurnText: Oponent Turn
 --- !u!114 &300904857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1344,7 +1346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &819386682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2852,7 +2854,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1678303108
 MonoBehaviour:
   m_ObjectHideFlags: 0

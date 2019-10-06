@@ -15,6 +15,15 @@ public class MessageManager : Singleton<MessageManager>
         PacketManager.Instance.SendPacket(packet, objectId);
     }
 
+    public void SendTankTurn(bool turnState, uint objectId)
+    {
+        BoolPackage packet = new BoolPackage();
+
+        packet.payload = turnState;
+
+        PacketManager.Instance.SendPacket(packet, objectId);
+    }
+
     public void SendPosition(Vector3 position, uint objectId)
     {
         PositionPacket packet = new PositionPacket();

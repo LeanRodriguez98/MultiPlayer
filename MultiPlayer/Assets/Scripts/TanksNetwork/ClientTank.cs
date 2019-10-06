@@ -19,6 +19,7 @@ public class ClientTank : MonoBehaviour {
     {
         switch (type)
         {
+            
             case (ushort)UserPacketType.Position:
                 PositionPacket positionPacket = new PositionPacket();
                 positionPacket.Deserialize(stream);

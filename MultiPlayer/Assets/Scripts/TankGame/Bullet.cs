@@ -8,11 +8,7 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.CompareTag("WorldLimits"))
-        {
-            GameManager.Instance.OnEndTurn();
-            gameObject.SetActive(false);
-        }
+        
 
     }
 }

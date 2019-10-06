@@ -8,6 +8,7 @@ public enum UserPacketType
     Message,
     Position,
     Rotation,
+    Bool,
     Int,
     PlayerUI,
     TurnSign,

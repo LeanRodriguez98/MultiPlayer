@@ -172,3 +172,23 @@ public class IntPacket : GamePacket<int>
         payload = binaryReader.ReadInt32();
     }
 }
+
+public class BoolPackage : GamePacket<bool>
+{
+    public BoolPackage() : base(global::PacketType.User)
+    {
+        userPacketType = (ushort)UserPacketType.Bool;
+    }
+
+    public override void OnSerialize(Stream stream)
+    {
+        BinaryWriter binaryWriter = new BinaryWriter(stream);
+        binaryWriter.Write(payload);
+    }
+
+    public override void OnDeserialize(Stream stream)
+    {
+        BinaryReader binaryReader = new BinaryReader(stream);
+        payload = binaryReader.ReadBoolean();
+    }
+}
