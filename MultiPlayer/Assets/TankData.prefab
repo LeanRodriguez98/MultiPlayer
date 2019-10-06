@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1128071575953732}
+  m_IsPrefabAsset: 1
+--- !u!1 &1128071575953732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4150582662456118}
+  - component: {fileID: 114444448380049964}
+  m_Layer: 0
+  m_Name: TankData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4150582662456118
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1128071575953732}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.05508572, y: -10.03, z: -0.056033887}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114444448380049964
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1128071575953732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3abcea5f72509fd4886a4fab7e788047, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controls:
+    addAngleKey: 101
+    removeAngleKey: 113
+    addBulletVelocity: 119
+    removeBulletVelocity: 115
+    rightMovement: 100
+    leftMovement: 97
+    shoot: 32
+  bulletToShoot:
+    bullet: {fileID: 0}
+    bulletColor: {r: 0, g: 0, b: 0, a: 0}
+    bulletRb: {fileID: 0}
+    spriteRenderer: {fileID: 0}
+  torretPivot: {fileID: 0}
+  movementSpeed: 100
+  rotationSpeed: 40
+  maxBulletVelocity: 20
+  AuxAngle: 0
+  bulletVelocity: 0
+  bulletVelocityMultiplyer: 5
+  lifes: 3
+  isYourTurn: 0
