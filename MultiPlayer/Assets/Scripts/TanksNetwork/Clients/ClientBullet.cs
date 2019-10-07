@@ -4,7 +4,6 @@ public class ClientBullet : MonoBehaviour
 {
     void OnEnable()
     {
-        PacketManager.Instance.Awake();
         PacketManager.Instance.AddListener(ObjectsID.bulletObjectID, OnReceivePacket);
     }
 

@@ -8,7 +8,7 @@ public abstract class GamePacket<P> : NetworkPacket<P>
 
 public class MessagePacket : GamePacket<string>
 {
-    public MessagePacket() : base(global::PacketType.User)
+    public MessagePacket() : base(PacketType.User)
     {
         userPacketType = (ushort)UserPacketType.Message;
     }
@@ -28,7 +28,7 @@ public class MessagePacket : GamePacket<string>
 
 public class PositionPacket : GamePacket<Vector3>
 {
-    public PositionPacket() : base(global::PacketType.User)
+    public PositionPacket() : base(PacketType.User)
     {
         userPacketType = (ushort)UserPacketType.Position;
     }
@@ -52,7 +52,7 @@ public class PositionPacket : GamePacket<Vector3>
 
 public class RotationPacket : GamePacket<Quaternion>
 {
-    public RotationPacket() : base(global::PacketType.User)
+    public RotationPacket() : base(PacketType.User)
     {
         userPacketType = (ushort)UserPacketType.Rotation;
     }
@@ -175,7 +175,7 @@ public class IntPacket : GamePacket<int>
 
 public class BoolPackage : GamePacket<bool>
 {
-    public BoolPackage() : base(global::PacketType.User)
+    public BoolPackage() : base(PacketType.User)
     {
         userPacketType = (ushort)UserPacketType.Bool;
     }

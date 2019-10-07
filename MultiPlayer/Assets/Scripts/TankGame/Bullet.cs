@@ -5,10 +5,4 @@ public class Bullet : MonoBehaviour
     {
         MessageManager.Instance.SendPosition(transform.position, ObjectsID.bulletObjectID);
     }
-
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        
-
-    }
 }

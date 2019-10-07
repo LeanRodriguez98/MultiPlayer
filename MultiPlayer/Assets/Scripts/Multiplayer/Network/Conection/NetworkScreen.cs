@@ -22,7 +22,7 @@ public class NetworkScreen : MBSingleton<NetworkScreen>
         IPAddress ipAddress = IPAddress.Parse(addressInputField.text);
         int port = System.Convert.ToInt32(portInputField.text);
 
-        NetworkManager.Instance.StartClient(ipAddress, port);
+        ConnectionManager.Instance.StartClient(ipAddress, port);
 
         SwitchToChatScreen();
     }
@@ -30,7 +30,7 @@ public class NetworkScreen : MBSingleton<NetworkScreen>
     void OnStartServerBtnClick()
     {
         int port = System.Convert.ToInt32(portInputField.text);
-        NetworkManager.Instance.StartServer(port);
+        ConnectionManager.Instance.StartServer(port);
         SwitchToChatScreen();
     }
 

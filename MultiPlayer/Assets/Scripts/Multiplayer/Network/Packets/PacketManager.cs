@@ -2,13 +2,14 @@
 using System.IO;
 using System.Net;
 
-public class PacketManager : Singleton<PacketManager>, IReceiveData
+public class PacketManager : MBSingleton<PacketManager>, IReceiveData
 {
     Dictionary<uint, System.Action<uint, ushort, Stream>> onPacketReceived = new Dictionary<uint, System.Action<uint, ushort, Stream>>();
     uint currentPacketId = 0;
 
-    public void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         NetworkManager.Instance.OnReceiveEvent += OnReceiveData;
     }
 
@@ -28,19 +29,17 @@ public class PacketManager : Singleton<PacketManager>, IReceiveData
     {
         byte[] bytes = Serialize(packet, objectId);
 
-        if (NetworkManager.Instance.isServer){
+        if (ConnectionManager.Instance.isServer)
             NetworkManager.Instance.Broadcast(bytes);
-        }
-        else{
+        else
             NetworkManager.Instance.SendToServer(bytes);
-        }
     }
 
     public void SendPacket<T>(NetworkPacket<T> packet, bool reliable = false)
     {
         byte[] bytes = Serialize(packet);
 
-        if (NetworkManager.Instance.isServer)
+        if (ConnectionManager.Instance.isServer)
             NetworkManager.Instance.Broadcast(bytes);
         else
             NetworkManager.Instance.SendToServer(bytes);
@@ -53,10 +52,11 @@ public class PacketManager : Singleton<PacketManager>, IReceiveData
         NetworkManager.Instance.SendToClient(bytes, ipEndPoint);
     }
 
-   byte[] Serialize<T>(NetworkPacket<T> packet)
+    byte[] Serialize<T>(NetworkPacket<T> packet)
     {
         PacketHeader header = new PacketHeader();
         MemoryStream stream = new MemoryStream();
+
         header.protocolId = 0;
         header.packetType = packet.packetType;
 
@@ -76,12 +76,13 @@ public class PacketManager : Singleton<PacketManager>, IReceiveData
 
         header.protocolId = 0;
         header.packetType = packet.packetType;
+
         if (packet.packetType == PacketType.User)
         {
             userHeader.packetType = packet.userPacketType;
-            userHeader.packetId   = currentPacketId++;
-            userHeader.senderId   = NetworkManager.Instance.clientId;
-            userHeader.objectId   = objectId;
+            userHeader.packetId = currentPacketId++;
+            userHeader.senderId = NetworkManager.Instance.clientId;
+            userHeader.objectId = objectId;
         }
 
         header.Serialize(stream);
@@ -96,13 +97,20 @@ public class PacketManager : Singleton<PacketManager>, IReceiveData
     public void OnReceiveData(byte[] data, IPEndPoint ipEndpoint)
     {
         PacketHeader header = new PacketHeader();
-        UserPacketHeader userHeader = new UserPacketHeader();
         MemoryStream stream = new MemoryStream(data);
 
         header.Deserialize(stream);
-        userHeader.Deserialize(stream);
 
-        InvokeCallback(userHeader.objectId, userHeader.packetId, userHeader.packetType, stream);
+        if (header.packetType == PacketType.User)
+        {
+            UserPacketHeader userHeader = new UserPacketHeader();
+            userHeader.Deserialize(stream);
+            InvokeCallback(userHeader.objectId, userHeader.packetId, userHeader.packetType, stream);
+        }
+        else
+        {
+            ConnectionManager.Instance.OnReceivePacket(ipEndpoint, header.packetType, stream);
+        }
 
         stream.Close();
     }

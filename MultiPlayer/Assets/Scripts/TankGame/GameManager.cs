@@ -79,7 +79,7 @@ public class GameManager : MBSingleton<GameManager>
     public void OnEndTurn()
     {
         turnTime = auxTimer;
-        if (NetworkManager.Instance.isServer)
+        if (ConnectionManager.Instance.isServer)
             UI_Canvas.Instance.UpdatePlayerTurn();
         player.SetTurn();
     }

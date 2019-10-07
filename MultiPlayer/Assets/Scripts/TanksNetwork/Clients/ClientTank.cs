@@ -6,7 +6,6 @@ public class ClientTank : MonoBehaviour {
     private GameObject torretPivot;
     void OnEnable()
     {
-        PacketManager.Instance.Awake();
         PacketManager.Instance.AddListener(ObjectsID.tankObjectID, OnReceivePacket);
     }
 

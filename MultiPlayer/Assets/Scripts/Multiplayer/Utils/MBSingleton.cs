@@ -25,7 +25,7 @@ public class MBSingleton<T> : MonoBehaviour where T : MBSingleton<T>
 
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         if (instance != null)
             Destroy(this.gameObject);

@@ -11,7 +11,6 @@ public class ClientPlayerUIData : MonoBehaviour
     }
     public void Init()
     {
-        PacketManager.Instance.Awake();
         PacketManager.Instance.AddListener(ObjectsID.playerUIObjectID, OnReceivePacket);
     }
 

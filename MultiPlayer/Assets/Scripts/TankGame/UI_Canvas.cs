@@ -25,7 +25,7 @@ public class UI_Canvas : MBSingleton<UI_Canvas>
     void Start()
     {
         ClientPlayerUIData clientUIData;
-        if (NetworkManager.Instance.isServer)
+        if (ConnectionManager.Instance.isServer)
         {
             playerUIData = redTankUI;
             clientUIData = gameObject.AddComponent<ClientPlayerUIData>();

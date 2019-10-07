@@ -57,5 +57,14 @@ namespace UnityEngine
         }
         #endregion
 
+
+        public static ulong GetRandomUlong()
+        {
+            uint a = (uint)Random.Range(0, int.MaxValue);
+            uint b = (uint)Random.Range(0, int.MaxValue);
+            string longString = a.ToString() + b.ToString();
+            return ulong.Parse(longString);
+        }
+
     }
 }

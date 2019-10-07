@@ -6,23 +6,19 @@ using UnityEngine;
 
 public class TanksManagers : MBSingleton<TanksManagers> {
 
-    public ClientText playerPointsText;
-    public ClientText playerUDPPointsText;
 
     public bool isServer = true;
     public GameObject redTank;
     public GameObject blueTank;
     public GameObject redBullet;
     public GameObject blueBullet;
-
     public GameObject networkMenu;
     public GameObject game;
-
     public GameManager gameManager;
     public UI_Canvas canvas;
     public void InitGame()
     {
-        isServer = NetworkManager.Instance.isServer;
+        isServer = ConnectionManager.Instance.isServer;
         networkMenu.SetActive(false);
         game.SetActive(true);
         redTank.SetActive(true);
@@ -30,11 +26,11 @@ public class TanksManagers : MBSingleton<TanksManagers> {
         gameManager.enabled = true;
         canvas.enabled = true;
         SetPlayers();
-        AddListener();
-    }
+    } 
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         networkMenu.SetActive(true);
         game.SetActive(false);
         redTank.SetActive(false);
@@ -61,13 +57,7 @@ public class TanksManagers : MBSingleton<TanksManagers> {
         }
     }
 
-    void AddListener()
-    {
-        if (!isServer)
-        {
-            PacketManager.Instance.Awake();
-        }
-    }
+   
 
  
 }

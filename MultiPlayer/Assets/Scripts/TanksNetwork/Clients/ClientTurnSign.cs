@@ -15,7 +15,6 @@ public class ClientTurnSign : MonoBehaviour {
     }
     public void Init()
     {
-        PacketManager.Instance.Awake();
         PacketManager.Instance.AddListener(ObjectsID.turnSignObjectID, OnReceivePacket);
         PacketManager.Instance.AddListener(ObjectsID.clockSignObjectID, OnReceivePacket);
     }

@@ -2171,6 +2171,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1271667950}
   - component: {fileID: 1271667949}
+  - component: {fileID: 1271667953}
+  - component: {fileID: 1271667952}
   - component: {fileID: 1271667951}
   m_Layer: 0
   m_Name: NetworkManager
@@ -2190,7 +2192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f30c9f44b7174d45b74c4ae777e3447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeOut: 30
 --- !u!4 &1271667950
 Transform:
   m_ObjectHideFlags: 0
@@ -2215,8 +2216,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b6e94f3d281ad2479128fe4abd65a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPointsText: {fileID: 0}
-  playerUDPPointsText: {fileID: 0}
   isServer: 1
   redTank: {fileID: 1682744235}
   blueTank: {fileID: 823133171}
@@ -2226,6 +2225,28 @@ MonoBehaviour:
   game: {fileID: 2066661491}
   gameManager: {fileID: 1773509404}
   canvas: {fileID: 300904856}
+--- !u!114 &1271667952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1271667948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16bad48f6bf6413489a805725b0f37a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1271667953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1271667948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0172a444e932da4438d56b3f4535fe55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1395809982
 GameObject:
   m_ObjectHideFlags: 0
@@ -3178,6 +3199,7 @@ MonoBehaviour:
     minutes: 1
     seconds: 0
     miliseconds: 0
+  player: {fileID: 0}
   gameOver: 0
 --- !u!4 &1773509405
 Transform:
