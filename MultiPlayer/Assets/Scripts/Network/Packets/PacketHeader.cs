@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using UnityEngine;
 
 public class PacketHeader : ISerializePacket
 {
@@ -9,20 +8,16 @@ public class PacketHeader : ISerializePacket
     public void Serialize(Stream stream)
     {
         BinaryWriter binaryWriter = new BinaryWriter(stream);
-
         binaryWriter.Write(protocolId);
         binaryWriter.Write((ushort)packetType);
-
         OnSerialize(stream);
     }
 
     public void Deserialize(Stream stream)
     {
         BinaryReader binaryReader = new BinaryReader(stream);
-
         protocolId = binaryReader.ReadUInt32();
         packetType = (PacketType)binaryReader.ReadUInt16();
-
         OnDeserialize(stream);
     }
 

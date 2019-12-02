@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.IO;
 
-public class ClientText : UnreliableOrderPacket<string>
+public class ClientText : NotReliableOrderPacket<string>
 {
     public Text text;
     public uint objectID;

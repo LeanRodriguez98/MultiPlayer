@@ -11,11 +11,10 @@ public abstract class OrderPacket<P> : MonoBehaviour
     public abstract void OnFinishDeserializing(Action<P> action, P payload);
 }
 
-
 public abstract class ReliableOrderPacket<P> : OrderPacket<P>
 {
     protected static Dictionary<uint, P> pendingPackets = new Dictionary<uint, P>();
-
+    private const uint LIMIT = 32; 
     public override void OnFinishDeserializing(Action<P> action, P payload)
     {
         uint nextId = lastIdExecuted + 1;
@@ -37,7 +36,7 @@ public abstract class ReliableOrderPacket<P> : OrderPacket<P>
         else if (idReceived > nextId)
         {
             pendingPackets.Add(idReceived, payload);
-            if (pendingPackets.Count > 32)
+            if (pendingPackets.Count > LIMIT)
             {
                 List<uint> ids = pendingPackets.Keys.ToList();
                 ids.Sort();
@@ -55,7 +54,7 @@ public abstract class ReliableOrderPacket<P> : OrderPacket<P>
     }
 }
 
-public abstract class UnreliableOrderPacket<P> : OrderPacket<P>
+public abstract class NotReliableOrderPacket<P> : OrderPacket<P>
 {
     public override void OnFinishDeserializing(Action<P> action, P payload)
     {
