@@ -4,7 +4,8 @@ using UnityEngine.UI;
 using System.IO;
 using UnityEngine;
 
-public class TanksManagers : MBSingleton<TanksManagers> {
+public class TanksManagers : MBSingleton<TanksManagers>
+{
 
     public bool isServer = true;
     public GameObject redTank;

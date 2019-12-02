@@ -93,8 +93,8 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
         }
         else
         {
-            AcknowledgeChecker acknowledgeChecker = ConnectionManager.Instance.OwnClient.acknowledgeChecker;
-            uint acknowledgeId = acknowledgeChecker.NewAcknowledge;
+            AcknowledgeChecker acknowledgeChecker = ConnectionManager.Instance.client.acknowledgeChecker;
+            uint acknowledgeId = acknowledgeChecker.NextAcknowledge;
             bytes = WrapReliabilityPacket(bytes, reliable, acknowledgeChecker, acknowledgeId);
             NetworkManager.Instance.SendToServer(bytes);
             if (reliable)
@@ -114,8 +114,8 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
         }
         else
         {
-            AcknowledgeChecker acknowledgeChecker = ConnectionManager.Instance.OwnClient.acknowledgeChecker;
-            uint acknowledgeId = acknowledgeChecker.NewAcknowledge;
+            AcknowledgeChecker acknowledgeChecker = ConnectionManager.Instance.client.acknowledgeChecker;
+            uint acknowledgeId = acknowledgeChecker.NextAcknowledge;
             bytes = WrapReliabilityPacket(bytes, reliable, acknowledgeChecker, acknowledgeId);
             NetworkManager.Instance.SendToServer(bytes);
             if (reliable)
@@ -135,7 +135,7 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
         }
         else
         {
-            bytes = WrapReliabilityPacket(bytes, false, ConnectionManager.Instance.OwnClient.acknowledgeChecker);
+            bytes = WrapReliabilityPacket(bytes, false, ConnectionManager.Instance.client.acknowledgeChecker);
             NetworkManager.Instance.SendToServer(bytes);
         }
     }
@@ -291,8 +291,8 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
                     }
                     else
                     {
-                        ConnectionManager.Instance.OwnClient.acknowledgeChecker.RegisterPackageReceived(packageAcknowledge);
-                        ConnectionManager.Instance.OwnClient.acknowledgeChecker.ClearPackets(lastAcknowledge, prevAcknowledgeArray);
+                        ConnectionManager.Instance.client.acknowledgeChecker.RegisterPackageReceived(packageAcknowledge);
+                        ConnectionManager.Instance.client.acknowledgeChecker.ClearPackets(lastAcknowledge, prevAcknowledgeArray);
                     }
                 }
             }

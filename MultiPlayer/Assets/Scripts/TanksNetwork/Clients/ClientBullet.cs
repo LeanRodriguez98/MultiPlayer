@@ -46,7 +46,7 @@ public class ClientBullet : ReliableOrderPacket<float[]>
 
     private void FixedUpdate()
     {
-        
+
     }
 
     void OnTriggerEnter2D(Collider2D col)

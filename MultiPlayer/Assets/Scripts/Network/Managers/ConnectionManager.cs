@@ -63,15 +63,15 @@ public class ConnectionManager : MBSingleton<ConnectionManager>
         }
     }
     public readonly Dictionary<IPEndPoint, uint> ipToId = new Dictionary<IPEndPoint, uint>();
-    public Client OwnClient = new Client();
-    private const float SEND_RATE = 0.01f;
+    public Client client = new Client();
+    private const float SENDRATE = 0.1f;
     private float timer = 0f;
     public bool isServer { get; private set; }
     public IPAddress ipAddress { get; private set; }
 
     public int port { get; private set; }
 
-    private State currState;
+    private State currentState;
     private uint id = 0;
 
     protected override void Awake()
@@ -92,13 +92,11 @@ public class ConnectionManager : MBSingleton<ConnectionManager>
     public void StartClient(IPAddress ip, int port)
     {
         isServer = false;
-
         this.port = port;
         this.ipAddress = ip;
-
         NetworkManager.Instance.StartConnection(ipAddress, port);
-        currState = State.SendingConnectionRequest;
-        OwnClient.acknowledgeChecker = new AcknowledgeChecker();
+        currentState = State.SendingConnectionRequest;
+        client.acknowledgeChecker = new AcknowledgeChecker();
         enabled = true;
     }
 
@@ -117,31 +115,25 @@ public class ConnectionManager : MBSingleton<ConnectionManager>
         {
             timer += Time.unscaledDeltaTime;
 
-            if (timer >= SEND_RATE)
+            if (timer >= SENDRATE)
             {
-                switch (currState)
+                switch (currentState)
                 {
                     case State.SendingConnectionRequest:
-                        {
-                            SendConnectionRequest();
-                        }
+                        SendConnectionRequest();
                         break;
                     case State.RespondingChallenge:
-                        {
-                            SendChallengeResponse(OwnClient.clientSalt, OwnClient.serverSalt);
-                        }
+                        SendChallengeResponse(client.clientSalt, client.serverSalt);
                         break;
                     case State.Connected:
-                        {
-                            OwnClient.acknowledgeChecker.SendPendingPackets();
-                        }
+                        client.acknowledgeChecker.SendPendingPackets();
                         break;
                 }
                 timer = 0f;
             }
             else
             {
-                ConnectionManager.Instance.OwnClient.acknowledgeChecker.SendPendingPackets();
+                ConnectionManager.Instance.client.acknowledgeChecker.SendPendingPackets();
             }
         }
         else
@@ -197,12 +189,12 @@ public class ConnectionManager : MBSingleton<ConnectionManager>
 
     private void CheckAndSendChallengeResponse(IPEndPoint ipEndpoint, ChallengeRequestData challengeRequestData)
     {
-        if (!isServer && currState == State.SendingConnectionRequest)
+        if (!isServer && currentState == State.SendingConnectionRequest)
         {
-            OwnClient.clientSalt = challengeRequestData.clientSalt;
-            OwnClient.serverSalt = challengeRequestData.serverSalt;
-            currState = State.RespondingChallenge;
-            SendChallengeResponse(OwnClient.clientSalt, OwnClient.serverSalt);
+            client.clientSalt = challengeRequestData.clientSalt;
+            client.serverSalt = challengeRequestData.serverSalt;
+            currentState = State.RespondingChallenge;
+            SendChallengeResponse(client.clientSalt, client.serverSalt);
         }
     }
 
@@ -227,44 +219,28 @@ public class ConnectionManager : MBSingleton<ConnectionManager>
         }
     }
 
-    private void FinishHandShake()
-    {
-        if (!isServer && currState == State.RespondingChallenge)
-        {
-            currState = State.Connected;
-        }
-    }
-
-
     public void OnReceivePacket(IPEndPoint ipEndpoint, PacketType packetType, Stream stream)
     {
         switch (packetType)
         {
             case PacketType.ConnectionRequest:
-                {
-                    ConnectionRequestPacket connectionRequestPacket = new ConnectionRequestPacket();
-                    connectionRequestPacket.Deserialize(stream);
-                    CheckAndSendChallengeRequest(ipEndpoint, connectionRequestPacket.payload);
-                }
+                ConnectionRequestPacket connectionRequestPacket = new ConnectionRequestPacket();
+                connectionRequestPacket.Deserialize(stream);
+                CheckAndSendChallengeRequest(ipEndpoint, connectionRequestPacket.payload);
                 break;
             case PacketType.ChallengeRequest:
-                {
-                    ChallengeRequestPacket challengeRequestPacket = new ChallengeRequestPacket();
-                    challengeRequestPacket.Deserialize(stream);
-                    CheckAndSendChallengeResponse(ipEndpoint, challengeRequestPacket.payload);
-                }
+                ChallengeRequestPacket challengeRequestPacket = new ChallengeRequestPacket();
+                challengeRequestPacket.Deserialize(stream);
+                CheckAndSendChallengeResponse(ipEndpoint, challengeRequestPacket.payload);
                 break;
             case PacketType.ChallengeResponse:
-                {
-                    ChallengeResponsePacket challengeResponsePacket = new ChallengeResponsePacket();
-                    challengeResponsePacket.Deserialize(stream);
-                    CheckResult(ipEndpoint, challengeResponsePacket.payload);
-                }
+                ChallengeResponsePacket challengeResponsePacket = new ChallengeResponsePacket();
+                challengeResponsePacket.Deserialize(stream);
+                CheckResult(ipEndpoint, challengeResponsePacket.payload);
                 break;
             case PacketType.Connected:
-                {
-                    FinishHandShake();
-                }
+                if (!isServer && currentState == State.RespondingChallenge)
+                    currentState = State.Connected;
                 break;
         }
     }
@@ -272,28 +248,20 @@ public class ConnectionManager : MBSingleton<ConnectionManager>
     public void QueuePacket(byte[] packet, uint id, IPEndPoint ipEndPoint)
     {
         if (isServer)
-        {
             clients[ipToId[ipEndPoint]].acknowledgeChecker.QueuePacket(packet, id);
-        }
     }
 
     public void QueuePacket(byte[] packet, uint id)
     {
         if (!isServer)
-        {
-            OwnClient.acknowledgeChecker.QueuePacket(packet, id);
-        }
+            client.acknowledgeChecker.QueuePacket(packet, id);
     }
 
     public void RegisterPackageReceived(uint id, IPEndPoint ipEndPoint)
     {
         if (ConnectionManager.Instance.isServer)
-        {
             clients[ipToId[ipEndPoint]].acknowledgeChecker.RegisterPackageReceived(id);
-        }
         else
-        {
-            OwnClient.acknowledgeChecker.RegisterPackageReceived(id);
-        }
+            client.acknowledgeChecker.RegisterPackageReceived(id);
     }
 }

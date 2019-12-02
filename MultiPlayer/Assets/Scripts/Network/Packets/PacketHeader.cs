@@ -9,7 +9,7 @@ public class PacketHeader : ISerializePacket
     public void Serialize(Stream stream)
     {
         BinaryWriter binaryWriter = new BinaryWriter(stream);
-        
+
         binaryWriter.Write(protocolId);
         binaryWriter.Write((ushort)packetType);
 

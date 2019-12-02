@@ -63,25 +63,29 @@ public abstract class OrderedNetworkPacket<P>
     abstract public uint OnDeserialize(Stream stream);
 }
 
-public struct ConnectionRequestData {
+public struct ConnectionRequestData
+{
     public ulong clientSalt;
 }
 
 public class ConnectionRequestPacket : NetworkPacket<ConnectionRequestData>
 {
     public ConnectionRequestPacket() : base(PacketType.ConnectionRequest) { }
-    public override void OnDeserialize(Stream stream) {
+    public override void OnDeserialize(Stream stream)
+    {
         BinaryReader binaryReader = new BinaryReader(stream);
         payload.clientSalt = binaryReader.ReadUInt64();
     }
 
-    public override void OnSerialize(Stream stream) {
+    public override void OnSerialize(Stream stream)
+    {
         BinaryWriter binaryWriter = new BinaryWriter(stream);
         binaryWriter.Write(payload.clientSalt);
     }
 }
 
-public struct ChallengeRequestData {
+public struct ChallengeRequestData
+{
     public uint clientId;
     public ulong clientSalt;
     public ulong serverSalt;
@@ -90,14 +94,16 @@ public struct ChallengeRequestData {
 public class ChallengeRequestPacket : NetworkPacket<ChallengeRequestData>
 {
     public ChallengeRequestPacket() : base(PacketType.ChallengeRequest) { }
-    public override void OnDeserialize(Stream stream) {
+    public override void OnDeserialize(Stream stream)
+    {
         BinaryReader binaryReader = new BinaryReader(stream);
         payload.clientId = binaryReader.ReadUInt32();
         payload.clientSalt = binaryReader.ReadUInt64();
         payload.serverSalt = binaryReader.ReadUInt64();
     }
 
-    public override void OnSerialize(Stream stream) {
+    public override void OnSerialize(Stream stream)
+    {
         BinaryWriter binaryWriter = new BinaryWriter(stream);
         binaryWriter.Write(payload.clientId);
         binaryWriter.Write(payload.clientSalt);
@@ -106,31 +112,35 @@ public class ChallengeRequestPacket : NetworkPacket<ChallengeRequestData>
 }
 
 
-public struct ChallengeResponseData {
+public struct ChallengeResponseData
+{
     public ulong result;
 }
 
 public class ChallengeResponsePacket : NetworkPacket<ChallengeResponseData>
 {
     public ChallengeResponsePacket() : base(PacketType.ChallengeResponse) { }
-    public override void OnDeserialize(Stream stream) {
+    public override void OnDeserialize(Stream stream)
+    {
         BinaryReader binaryReader = new BinaryReader(stream);
         payload.result = binaryReader.ReadUInt64();
     }
 
-    public override void OnSerialize(Stream stream) {
+    public override void OnSerialize(Stream stream)
+    {
         BinaryWriter binaryWriter = new BinaryWriter(stream);
         binaryWriter.Write(payload.result);
     }
 }
 
-public struct InitData {
+public struct InitData
+{
 
 }
 
 public class ConnectedPacket : NetworkPacket<InitData>
 {
     public ConnectedPacket() : base(PacketType.Connected) { }
-    public override void OnDeserialize(Stream stream) {}
-    public override void OnSerialize(Stream stream) {}
+    public override void OnDeserialize(Stream stream) { }
+    public override void OnSerialize(Stream stream) { }
 }

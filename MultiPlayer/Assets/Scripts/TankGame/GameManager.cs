@@ -29,8 +29,8 @@ public class GameManager : MBSingleton<GameManager>
     void Start()
     {
         //auxTimer = turnTime;
-       // if (NetworkManager.Instance.isServer)
-           // player.SetTurn();
+        // if (NetworkManager.Instance.isServer)
+        // player.SetTurn();
     }
 
     // Update is called once per frame
@@ -39,9 +39,9 @@ public class GameManager : MBSingleton<GameManager>
         if (!gameOver)
         {
 
-           /* UpdateTime();
-            if (NetworkManager.Instance.isServer)
-                UI_Canvas.Instance.SetTimeText(clockValue);*/
+            /* UpdateTime();
+             if (NetworkManager.Instance.isServer)
+                 UI_Canvas.Instance.SetTimeText(clockValue);*/
 
             UI_Canvas.Instance.SetPlayerUIData(player);
         }
