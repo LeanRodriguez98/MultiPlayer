@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
-public class ClientTurnSign : MonoBehaviour {
-
+public class ClientTurnSign : UnreliableOrderPacket<string>
+{
     private Text turnSign;
     private Text clockSign;
     public void SetTurnSign(Text _turnSign)
@@ -24,7 +24,7 @@ public class ClientTurnSign : MonoBehaviour {
         PacketManager.Instance.RemoveListener(ObjectsID.turnSignObjectID);
         PacketManager.Instance.RemoveListener(ObjectsID.clockSignObjectID);
     }
-    void OnReceivePacket(uint packetId, ushort type, Stream stream)
+    void OnReceivePacket(ushort type, Stream stream)
     {
         switch (type)
         {

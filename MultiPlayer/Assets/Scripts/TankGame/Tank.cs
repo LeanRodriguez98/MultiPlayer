@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class Tank : MonoBehaviour
+public class Tank : ReliableOrderPacket<float[]>
 {
 
     [System.Serializable]
@@ -46,18 +46,26 @@ public class Tank : MonoBehaviour
     }
 
 
-    void Update()
+    void FixedUpdate()
     {
-            if (!GameManager.Instance.gameOver)
-            {
-                Movement();
-                RotateTorret();
-                ModifyBulletVelocity();
-                Shoot();
-            }
+        if (!GameManager.Instance.gameOver)
+        {
+            Movement();
+            RotateTorret();
+            ModifyBulletVelocity();
+            Shoot();
+        }
 
-        MessageManager.Instance.SendPosition(transform.position, ObjectsID.tankObjectID);
-        MessageManager.Instance.SendRotation(torretPivot.transform.rotation, ObjectsID.tankObjectID);
+        float[] tankData = new float[7];
+        tankData[0] = transform.position.x;
+        tankData[1] = transform.position.y;
+        tankData[2] = torretPivot.transform.rotation.x;
+        tankData[3] = torretPivot.transform.rotation.y;
+        tankData[4] = torretPivot.transform.rotation.z;
+        tankData[5] = torretPivot.transform.rotation.w;
+        tankData[6] = TanksManagers.Instance.GetClientTime();
+
+        MessageManager.Instance.SendTankData(tankData, ObjectsID.tankObjectID, ++lastIdSent);
     }
 
     public void Movement()
@@ -113,7 +121,6 @@ public class Tank : MonoBehaviour
     {
         if (!usedShoot)
         {
-
             if (Input.GetKeyDown(controls.shoot))
             {
                 bulletToShoot.bullet.SetActive(true);

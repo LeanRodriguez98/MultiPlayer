@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class TanksManagers : MBSingleton<TanksManagers> {
 
-
     public bool isServer = true;
     public GameObject redTank;
     public GameObject blueTank;
@@ -16,6 +15,10 @@ public class TanksManagers : MBSingleton<TanksManagers> {
     public GameObject game;
     public GameManager gameManager;
     public UI_Canvas canvas;
+
+    public bool interpolateTanks;
+    public bool interpolateBullets;
+    private float clientClock;
     public void InitGame()
     {
         isServer = ConnectionManager.Instance.isServer;
@@ -26,8 +29,12 @@ public class TanksManagers : MBSingleton<TanksManagers> {
         gameManager.enabled = true;
         canvas.enabled = true;
         SetPlayers();
-    } 
-
+        clientClock = Time.realtimeSinceStartup;
+    }
+    public float GetClientTime()
+    {
+        return Mathf.Abs(Time.realtimeSinceStartup - clientClock);
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -56,8 +63,4 @@ public class TanksManagers : MBSingleton<TanksManagers> {
             GameManager.Instance.SetLocalPlayer(blueTank.GetComponent<Tank>());
         }
     }
-
-   
-
- 
 }

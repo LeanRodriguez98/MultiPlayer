@@ -1,0 +1,16 @@
+﻿.vscode
+obj
+Library
+Logs
+
+Temp/
+*.csproj
+*.sln
+
+Build/
+
+Build-ESTA ANDA/
+
+.vs/
+
+ClassDiagram1.cd

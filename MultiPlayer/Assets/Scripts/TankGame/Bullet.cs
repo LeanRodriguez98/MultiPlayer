@@ -1,8 +1,11 @@
-﻿using UnityEngine;
-public class Bullet : MonoBehaviour
+﻿public class Bullet : ReliableOrderPacket<float[]>
 {
-    public void Update()
+    public void FixedUpdate()
     {
-        MessageManager.Instance.SendPosition(transform.position, ObjectsID.bulletObjectID);
+        float[] position = new float[3];
+        position[0] = transform.position.x;
+        position[1] = transform.position.y;
+        position[2] = TanksManagers.Instance.GetClientTime();
+        MessageManager.Instance.SendBallPosition(position, ObjectsID.bulletObjectID, ++lastIdSent);
     }
 }

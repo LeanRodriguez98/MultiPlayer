@@ -3,8 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - WorldLimits
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -15,9 +14,9 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - P1
-  - P2
-  - 
+  - Terrain
+  - Obstacles
+  - Mines
   - 
   - 
   - 

@@ -7,18 +7,19 @@ public enum UserPacketType
 {
     Message,
     Position,
-    Rotation,
-    Bool,
     Int,
+    Float,
+    Player,
+    Bullet,
+    Rotation,
+    Clock,
     PlayerUI,
     TurnSign,
-    Clock,
     Count
 }
 
 public class UserPacketHeader : ISerializePacket
 {
-    public uint packetId;
     public uint senderId;
     public uint objectId;
 
@@ -28,7 +29,6 @@ public class UserPacketHeader : ISerializePacket
     {
         BinaryWriter binaryWriter = new BinaryWriter(stream);
 
-        binaryWriter.Write(packetId);
         binaryWriter.Write(senderId);
         binaryWriter.Write(objectId);
         binaryWriter.Write(packetType);
@@ -40,7 +40,6 @@ public class UserPacketHeader : ISerializePacket
     {
         BinaryReader binaryReader = new BinaryReader(stream);
 
-        packetId = binaryReader.ReadUInt32();
         senderId = binaryReader.ReadUInt32();
         objectId = binaryReader.ReadUInt32();
         packetType = binaryReader.ReadUInt16();

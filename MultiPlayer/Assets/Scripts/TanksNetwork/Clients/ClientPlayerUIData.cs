@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-public class ClientPlayerUIData : MonoBehaviour
+public class ClientPlayerUIData : UnreliableOrderPacket<string>
 {
     private UI_Canvas.PlayerUIData uiToUpdate;
 
@@ -18,7 +18,7 @@ public class ClientPlayerUIData : MonoBehaviour
     {
         PacketManager.Instance.RemoveListener(ObjectsID.playerUIObjectID);
     }
-    void OnReceivePacket(uint packetId, ushort type, Stream stream)
+    void OnReceivePacket(ushort type, Stream stream)
     {
         switch (type)
         {

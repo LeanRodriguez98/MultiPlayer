@@ -70,6 +70,7 @@ public class UdpConnection
         }
         catch(SocketException e)
         {
+            // This happens when a client disconnects, as we fail to send to that port.
             UnityEngine.Debug.LogError("[UdpConnection] " + e.Message);
         }
     }
