@@ -1,4 +1,4 @@
-﻿public class Bullet : ReliableOrderPacket<float[]>
+﻿public class Bullet : ReliableOrder<float[]>
 {
     public void FixedUpdate()
     {

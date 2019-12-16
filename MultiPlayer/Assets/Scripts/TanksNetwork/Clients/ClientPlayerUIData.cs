@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-public class ClientPlayerUIData : NotReliableOrderPacket<string>
+public class ClientPlayerUIData : NotReliableOrder<string>
 {
     private UI_Canvas.PlayerUIData uiToUpdate;
 

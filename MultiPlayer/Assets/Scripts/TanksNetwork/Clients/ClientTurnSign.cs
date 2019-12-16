@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
-public class ClientTurnSign : NotReliableOrderPacket<string>
+public class ClientTurnSign : NotReliableOrder<string>
 {
     private Text turnSign;
     private Text clockSign;

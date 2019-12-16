@@ -49,12 +49,12 @@ public abstract class OrderedNetworkPacket<P>
         this.packetType = packetType;
     }
 
-    public void Serialize(Stream stream, uint id)
+    public void Serialize(Stream stream, uint id)// la diferencia con el networkPacket comun es que se manda un ID
     {
         OnSerialize(stream, id);
     }
 
-    public uint Deserialize(Stream stream)
+    public uint Deserialize(Stream stream)// y esta funcion lo recive
     {
         return OnDeserialize(stream);
     }

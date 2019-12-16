@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class Tank : ReliableOrderPacket<float[]>
+public class Tank : ReliableOrder<float[]>
 {
 
     [System.Serializable]
@@ -65,7 +65,7 @@ public class Tank : ReliableOrderPacket<float[]>
         tankData[5] = torretPivot.transform.rotation.w;
         tankData[6] = TanksManagers.Instance.GetClientTime();
 
-        MessageManager.Instance.SendTankData(tankData, ObjectsID.tankObjectID, ++lastIdSent);
+        MessageManager.Instance.SendTankData(tankData, ObjectsID.tankObjectID, ++lastIdSent);// Se manda el paquete
     }
 
     public void Movement()

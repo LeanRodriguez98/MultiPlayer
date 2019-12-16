@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
-public class ClientBullet : ReliableOrderPacket<float[]>
+public class ClientBullet : ReliableOrder<float[]>
 {
     private bool interpolation = false;
     private Vector2 interpolationDestinationPosition = Vector2.zero;

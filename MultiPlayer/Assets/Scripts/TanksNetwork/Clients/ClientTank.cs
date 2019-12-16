@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-public class ClientTank : ReliableOrderPacket<float[]>
+public class ClientTank : ReliableOrder<float[]>// tanto el que envia como el que recive heredan de lo mismo para usar la misma implementacion de "Deserialize" y "OnFinishDeserializing"
 {
     private GameObject torretPivot;
     private bool interpolation = false;
@@ -23,7 +23,7 @@ public class ClientTank : ReliableOrderPacket<float[]>
         {
             case (ushort)UserPacketType.Player:
                 TankPacket tankPacket = new TankPacket();
-                idReceived = tankPacket.Deserialize(stream);
+                idReceived = tankPacket.Deserialize(stream);// cuando llega el paquete, utiliza las implementaciones de la clase base
                 OnFinishDeserializing(SetTankTransformations, tankPacket.payload);
                 break;
                 //case (ushort)UserPacketType.Position:

@@ -206,7 +206,7 @@ public class FloatPacket : GamePacket<float>
         payload = binaryReader.ReadSingle();
     }
 }
-public class BulletPacket : OrderedGamePacket<float[]>
+public class BulletPacket : OrderedGamePacket<float[]> // Al ser uun ordered, si serializa y retorna un id
 {
     public BulletPacket() : base(global::PacketType.User, true)
     {
@@ -216,7 +216,7 @@ public class BulletPacket : OrderedGamePacket<float[]>
     public override void OnSerialize(Stream stream, uint id)
     {
         BinaryWriter binaryWriter = new BinaryWriter(stream);
-        binaryWriter.Write(id);
+        binaryWriter.Write(id);// lo primero que se escribe en el paquete es su ID
         binaryWriter.Write(payload[0]);
         binaryWriter.Write(payload[1]);
         binaryWriter.Write(payload[2]);
@@ -231,7 +231,7 @@ public class BulletPacket : OrderedGamePacket<float[]>
         payload[1] = binaryReader.ReadSingle();
         payload[2] = binaryReader.ReadSingle();
 
-        return id;
+        return id;//y deserializar retorna el ID
     }
 }
 

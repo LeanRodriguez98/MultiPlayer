@@ -50,8 +50,7 @@ public class NetworkManager : MBSingleton<NetworkManager>, IReceiveData
             while (iterator.MoveNext())
             {
                 Client client = iterator.Current.Value;
-                data = PacketManager.Instance.WrapReliabilityPacket(
-                    data, reliable, client.acknowledgeChecker);
+                data = PacketManager.Instance.WrapReliabilityPacket(data, reliable, client.acknowledgeChecker);
                 connection.Send(data, client.ipEndPoint);
 
                 if (reliable)

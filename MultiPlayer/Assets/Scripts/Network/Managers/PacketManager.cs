@@ -39,16 +39,16 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
 
         using (MD5 md5Hash = MD5.Create())
         {
-            byte[] hash = md5Hash.ComputeHash(packet);
+            byte[] hash = md5Hash.ComputeHash(packet);//CheckSum: genera hash de 128 bites
             MemoryStream streamHash = new MemoryStream(hash);
             BinaryReader hashReader = new BinaryReader(streamHash);
             int hash32 = hashReader.ReadInt32();
-            binaryWriter.Write(hash32);
+            binaryWriter.Write(hash32);//CheckSum:me quedo con los primeros 32
         }
         stream.Close();
         byte[] checkSum = stream.ToArray();
         byte[] wrappedBytes = new byte[checkSum.Length + packet.Length];
-        checkSum.CopyTo(wrappedBytes, 0);
+        checkSum.CopyTo(wrappedBytes, 0);//CheckSum:genero un nuevo array con el checksum adelante para poder verificar primero el checksum al recivirlo
         packet.CopyTo(wrappedBytes, checkSum.Length);
 
         return wrappedBytes;
@@ -58,15 +58,15 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
     {
         MemoryStream stream = new MemoryStream();
         BinaryWriter binaryWriter = new BinaryWriter(stream);
-        binaryWriter.Write(reliable);
+        binaryWriter.Write(reliable);// escribo si es relaiable
         if (reliable)
         {
-            binaryWriter.Write(acknowledgeId);
+            binaryWriter.Write(acknowledgeId);// escribo el ackid
             uint lastAcknowledge;
             uint acknowledgeArray;
             bool hasToConfirm = acknowledgeChecker.GetAcknowledgeConfirmation(out lastAcknowledge, out acknowledgeArray);
-            binaryWriter.Write(hasToConfirm);
-            if (hasToConfirm)
+            binaryWriter.Write(hasToConfirm);// si no hay que confirmar, solo mando un bool diciendo que no hay que hacerlo
+            if (hasToConfirm)//si confirmas, mandas la data
             {
                 binaryWriter.Write(lastAcknowledge);
                 binaryWriter.Write(acknowledgeArray);
@@ -78,7 +78,7 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
         reliability.CopyTo(wrappedBytes, 0);
         packet.CopyTo(wrappedBytes, reliability.Length);
 
-        wrappedBytes = WrapCheckSumPacket(wrappedBytes);
+        wrappedBytes = WrapCheckSumPacket(wrappedBytes);// creo el checksum para la verificacion de que llegue bien
 
         return wrappedBytes;
     }
@@ -106,7 +106,7 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
 
     public void SendPacket<T>(OrderedNetworkPacket<T> packet, uint objectId, bool reliable, uint id)
     {
-        byte[] bytes = Serialize(packet, objectId, id);
+        byte[] bytes = Serialize(packet, objectId, id);// se serializa junto a su ID para conservar el orden
 
         if (ConnectionManager.Instance.isServer)
         {
@@ -115,18 +115,18 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
         else
         {
             AcknowledgeChecker acknowledgeChecker = ConnectionManager.Instance.client.acknowledgeChecker;
-            uint acknowledgeId = acknowledgeChecker.NextAcknowledge;
+            uint acknowledgeId = acknowledgeChecker.NextAcknowledge;// saco un nuevo ack
             bytes = WrapReliabilityPacket(bytes, reliable, acknowledgeChecker, acknowledgeId);
             NetworkManager.Instance.SendToServer(bytes);
             if (reliable)
             {
-                ConnectionManager.Instance.QueuePacket(bytes, acknowledgeId);
+                ConnectionManager.Instance.QueuePacket(bytes, acknowledgeId);// todo lo que esta en esta lista se spamea
             }
         }
     }
 
     public void SendPacket<T>(NetworkPacket<T> packet)
-    {
+    {// este override manda sin ackchecker xq esta siendo espameado
         byte[] bytes = Serialize(packet);
 
         if (ConnectionManager.Instance.isServer)
@@ -221,7 +221,7 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
 
         header.Serialize(stream);
         userHeader.Serialize(stream);
-        packet.Serialize(stream, id);
+        packet.Serialize(stream, id);// igual que Serialize normal, pero se agrega un paquete con el ID
 
         stream.Close();
 
@@ -230,12 +230,12 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
 
     public void OnReceiveData(byte[] data, IPEndPoint ipEndpoint)
     {
-        PacketHeader header = new PacketHeader();
+        PacketHeader header = new PacketHeader();//CheckSum: header para leer
         MemoryStream stream = new MemoryStream(data);
 
         BinaryReader binaryReader = new BinaryReader(stream);
 
-        int hash32 = binaryReader.ReadInt32();
+        int hash32 = binaryReader.ReadInt32(); //CheckSum: Se copia solamente el hash para verificar checksum
 
         byte[] dataWithoutHash = new byte[data.Length - 4];
         Array.Copy(data, 4, dataWithoutHash, 0, data.Length - 4);
@@ -244,7 +244,7 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
         {
             if (UnityEngine.Random.Range(0f, 100f) < 1f)
             {
-                for (int i = 0; i < dataWithoutHash.Length; i++)
+                for (int i = 0; i < dataWithoutHash.Length; i++)//CheckSum: trucheo la copia local para que de mal y salte checksum
                 {
                     if (dataWithoutHash[i] != 0)
                         dataWithoutHash[i] = 0;
@@ -258,10 +258,10 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
             MemoryStream hashStream = new MemoryStream(hash);
             BinaryReader hashReader = new BinaryReader(hashStream);
             ourHash = hashReader.ReadInt32();
-            hashStream.Close();
+            hashStream.Close(); //CheckSum: creo un hash igual y tienen que ser iguales para saber que el paquete no esta corrupto
         }
 
-        if (hash32 == ourHash)
+        if (hash32 == ourHash)//CheckSum: verifica si son iguales
         {
             bool reliability = binaryReader.ReadBoolean();
 
@@ -276,18 +276,30 @@ public class PacketManager : MBSingleton<PacketManager>, IReceiveData
                     }
                 }
 
-                uint packageAcknowledge = binaryReader.ReadUInt32();
-                bool hasAcknowledge = binaryReader.ReadBoolean();
+                uint packageAcknowledge = binaryReader.ReadUInt32();//Si es reliability lee el ack del paquete
+                //este es el que recibo del otro
+
+                if (ConnectionManager.Instance.isServer)
+                {
+                    Client client = ConnectionManager.Instance.clients[ConnectionManager.Instance.ipToId[ipEndpoint]];
+                    client.acknowledgeChecker.RegisterPackageReceived(packageAcknowledge);
+                }
+                else
+                {
+                    ConnectionManager.Instance.client.acknowledgeChecker.RegisterPackageReceived(packageAcknowledge);
+                }
+
+                bool hasAcknowledge = binaryReader.ReadBoolean();// el bool que verifica si habia ack
                 if (hasAcknowledge)
                 {
-                    uint lastAcknowledge = binaryReader.ReadUInt32();
-                    uint prevAcknowledgeArray = binaryReader.ReadUInt32();
+                    uint lastAcknowledge = binaryReader.ReadUInt32();// el ultimo que llego siendo confirmado
+                    uint prevAcknowledgeArray = binaryReader.ReadUInt32();// el resto del array para verificar posicion en el mismo
 
                     if (ConnectionManager.Instance.isServer)
                     {
                         Client client = ConnectionManager.Instance.clients[ConnectionManager.Instance.ipToId[ipEndpoint]];
                         client.acknowledgeChecker.RegisterPackageReceived(packageAcknowledge);
-                        client.acknowledgeChecker.ClearPackets(lastAcknowledge, prevAcknowledgeArray);
+                        client.acknowledgeChecker.ClearPackets(lastAcknowledge, prevAcknowledgeArray);// limpio los que ya llegaron para que los deje de spamear
                     }
                     else
                     {
